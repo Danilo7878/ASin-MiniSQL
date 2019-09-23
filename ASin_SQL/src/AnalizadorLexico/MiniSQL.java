@@ -11,18 +11,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import java.util.ArrayList;
 /**
  *
  * @author danil
  */
+
+
 public class MiniSQL extends javax.swing.JFrame {
 
     /**
@@ -157,19 +157,16 @@ public class MiniSQL extends javax.swing.JFrame {
             // TODO add your handling code here:
             Reader escanear = new BufferedReader(new FileReader(PathSQL));
             Lexer lexer = new Lexer(escanear);
-            String[] fichero_extension = PathSQL.split(Pattern.quote("."));
-            String NewPath = fichero_extension[0].concat(".out");
-            PrintWriter escribir = new PrintWriter(new File(NewPath));
+            ArrayList<String> ListadoDeTokens = new ArrayList();
             String errores = "";
             
             while (true) {
             Tokens token = lexer.yylex();
                 if (token == null) {
                     //cerrar el archivo.out 
+                    
+                    //INDICAR EN ESTA PARTE SI EL ANÁLISIS FUE CORRECTO O NO
                     txtArea_Errores.setText(errores);
-                    escribir.flush();
-                    escribir.close();                    
-                    txtArea_Errores.append("\nPara mayor información consulte el archivo --> " + NewPath);
                     return;                                     
                 }
                 
@@ -200,14 +197,7 @@ public class MiniSQL extends javax.swing.JFrame {
                         escribir.println("Token: "+ token+ "|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
                         + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
                         }
-                        break;
-                    case FloatError:
-                        escribir.println("FLOAT ERROR: cadena no válida para el tipo de dato|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
-                        + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
-                        
-                        errores+= "FLOAT ERROR: cadena no válida para el tipo de dato|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
-                                  + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna + "\n";                        
-                        break;
+                        break;                   
                     case StringError:
                         escribir.println("STRING ERROR: Falta <'> o se encontró un salto de linea|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
                         + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);

@@ -18,8 +18,6 @@ Decimal = {Digito}\.{Digito}*
 NoDecimal = \.{Digito}+
 Identificador = {Letra} ({LetraOguion} | {Digito})*
 Float = {Signo} {Decimal} ({Exponente} {Signo} {Digito})?
-FloatError1 = {Signo} {NoDecimal} ({Exponente} {Signo} {Digito})?
-FloatError2 = {Signo} {Decimal} ({Exponente} {Signo}) | {Signo} {NoDecimal} ({Exponente} {Signo})
 OperadorAritmetico = "+"|"-"|"*"|"/"|"%"|"="
 OperadorLogico = "<"|"<="|">"|">="|"=="|"!="|"&&"|"||"
 SignoDePuntuacion = "!"|";"|","|"."
@@ -110,7 +108,6 @@ EXCEPTION {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn +1; Ultima
 {Bit} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return Bit;}
 {Digito} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return Int;}
 {Float} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return Float;}
-{FloatError1} | {FloatError2} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return FloatError;}
 {Simbolo} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return Simbolo;} 
 {ComentarioSimple} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return ComentarioSimple;}
 {String} {lexeme=yytext(); linea=yyline + 1; PrimeraColumna=yycolumn + 1; UltimaColumna=yycolumn+yylength(); return String;}

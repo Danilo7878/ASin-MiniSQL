@@ -15,7 +15,6 @@ public enum Tokens {
     Bit,
     Int,
     Float,
-    FloatError,
     Simbolo,
     ComentarioSimple,
     String,
