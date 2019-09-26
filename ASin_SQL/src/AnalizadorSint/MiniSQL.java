@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AnalizadorLexico;
+package AnalizadorSint;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -158,7 +158,8 @@ public class MiniSQL extends javax.swing.JFrame {
             Reader escanear = new BufferedReader(new FileReader(PathSQL));
             Lexer lexer = new Lexer(escanear);
             ArrayList<String> ListadoDeTokens = new ArrayList();
-            String errores = "";
+            String erroresL = "ERRORES DE LÉXICO: \n";
+            String erroresS = "";
             
             while (true) {
             Tokens token = lexer.yylex();
@@ -166,67 +167,54 @@ public class MiniSQL extends javax.swing.JFrame {
                     //cerrar el archivo.out 
                     
                     //INDICAR EN ESTA PARTE SI EL ANÁLISIS FUE CORRECTO O NO
-                    txtArea_Errores.setText(errores);
+                    txtArea_Errores.setText(erroresL);
                     return;                                     
                 }
                 
                 //seleccionar el tipo de Token
                 switch (token) {
-                    case Palabra_Reservada: case Float: case Bit: case Int: case Simbolo: 
-                        escribir.println("Token: "+ token+ "|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
-                        + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
+                    //No necesito saber su valor
+                     case Float: case Bit: case Int:  case String:
+                        ListadoDeTokens.add(token + "|" + lexer.linea);
                         break;
-                    case ComentarioSimple:
-                        escribir.println("Token: "+token+"|Linea: "+lexer.linea);
+                    //No necesito hacer nada con ellos en el análisis sintáctico
+                    case ComentarioSimple: case ComentarioMultilinea:
                         break;                        
-                    case ComentarioMultilinea:
-                        escribir.println("Token: "+token+"|Linea Inicial: "+lexer.linea);
-                        break;
                     case Identificador:
                         if (lexer.yylength() > 31) {
                             String TokenTruncado = lexer.lexeme.substring(0, 31);
-                            
-                            escribir.println("Token: "+ token+ "|Valor: " + TokenTruncado + "|Linea: " + lexer.linea
-                            + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna 
-                            + "|ALERTA: Indentificador Truncado");
-                            
-                            errores += "ALERTA: Indentificador Truncado|Valor: " + TokenTruncado + "|Linea: " + lexer.linea
+                            erroresL+= "ALERTA: Indentificador Truncado|Valor: " + TokenTruncado + "|Linea: " + lexer.linea
                             + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna + "\n";
                         }
-                        else{
-                        escribir.println("Token: "+ token+ "|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
-                        + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
-                        }
-                        break;                   
+                        ListadoDeTokens.add(token + "|" + lexer.linea);
+                        break;
+                    //Aquí si necesito el valor específico del token
+                    case Simbolo: case Palabra_Reservada:
+                        ListadoDeTokens.add(lexer.lexeme + "|" + lexer.linea);
+                        break;
+                    
+                    //Aún no sé si hacerlos parte del análisis sintáctico                    
                     case StringError:
-                        escribir.println("STRING ERROR: Falta <'> o se encontró un salto de linea|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
-                        + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
-                        
-                        errores+= "STRING ERROR: Falta <'> o se encontró un salto de linea|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
+                        ListadoDeTokens.add(token + "|" + lexer.linea);                        
+                        erroresL+= "STRING ERROR: Falta <'> o se encontró un salto de linea|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
                                   + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna + "\n";
-                        break;
-                    case String:
-                        String quitarSalto = lexer.lexeme.replaceAll("\n", "");
-                        quitarSalto = quitarSalto.replaceAll("\r", "");
-                        escribir.println("Token: "+ token+ "|Valor: " + quitarSalto + "|Linea: " + lexer.linea
-                        + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna);
-                        break;
-                    case ComentarioMultilineaError:
-                        escribir.println("ERROR: Comentario Multilinea sin cerrar|Linea Inicial: " + lexer.linea);
-                        
-                        errores+= "ERROR: Comentario Multilinea sin cerrar|Linea Inicial: " + lexer.linea+"\n";
-                        break;
+                        break;                                                                
                     case ERROR:
-                        escribir.println("ERROR: cadena no reconocida|Valor: "+lexer.lexeme+"|Linea: "+lexer.linea
-                        +"|Columna Inicio: "+lexer.PrimeraColumna+"|Columna Fin: "+lexer.UltimaColumna);
-                        errores+= "ERROR: cadena no reconocida|Valor: "+lexer.lexeme+"|Linea: "+lexer.linea
+                        ListadoDeTokens.add(token + "|" + lexer.linea);
+                        erroresL+= "ERROR: cadena no reconocida|Valor: "+lexer.lexeme+"|Linea: "+lexer.linea
                                 +"|Columna Inicio: "+lexer.PrimeraColumna+"|Columna Fin: "+lexer.UltimaColumna+"\n";
                         break;
                     default:
                         throw new AssertionError();
+                        
+                    //Sólo avisar del error léxico pero no lo necesito en el sintáctico
+                    case ComentarioMultilineaError:                       
+                        erroresL+= "ERROR: Comentario Multilinea sin cerrar|Linea Inicial: " + lexer.linea+"\n";
+                        break;
                 }
             }
-                        
+            //COMIENZA EL ANÁLISIS SINTÁCTICO
+            
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MiniSQL.class.getName()).log(Level.SEVERE, null, ex);

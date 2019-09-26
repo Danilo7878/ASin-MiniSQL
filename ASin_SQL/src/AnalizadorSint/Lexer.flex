@@ -1,5 +1,5 @@
-package AnalizadorLexico;
-import static AnalizadorLexico.Tokens.*;
+package AnalizadorSint;
+import static AnalizadorSint.Tokens.*;
 %%
 
 %class Lexer
