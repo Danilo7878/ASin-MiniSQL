@@ -168,7 +168,7 @@ public class MiniSQL extends javax.swing.JFrame {
                     
                     //INDICAR EN ESTA PARTE SI EL ANÁLISIS FUE CORRECTO O NO
                     txtArea_Errores.setText(erroresL);
-                    return;                                     
+                    break;                                     
                 }
                 
                 //seleccionar el tipo de Token
@@ -179,7 +179,8 @@ public class MiniSQL extends javax.swing.JFrame {
                         break;
                     //No necesito hacer nada con ellos en el análisis sintáctico
                     case ComentarioSimple: case ComentarioMultilinea:
-                        break;                        
+                        break;
+                        
                     case Identificador:
                         if (lexer.yylength() > 31) {
                             String TokenTruncado = lexer.lexeme.substring(0, 31);
@@ -215,6 +216,30 @@ public class MiniSQL extends javax.swing.JFrame {
             }
             //COMIENZA EL ANÁLISIS SINTÁCTICO
             
+            //posibles comienzos de statement
+            
+            //recordar crear el lookahead para llevar una lógica
+            switch(ListadoDeTokens.get(0)) {
+                case "SELECT":                    
+                    break;
+                case "INSERT":                    
+                    break;
+                case "UPDATE":                    
+                    break;
+                case "DELETE":                    
+                    break;
+                case "CREATE":
+                    
+                    break;
+                case "ALTER":                    
+                    break;
+                case "DROP":                    
+                    break;
+                case "TRUNCATE":                    
+                    break;
+                default:
+                    break;
+            }
             
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MiniSQL.class.getName()).log(Level.SEVERE, null, ex);
