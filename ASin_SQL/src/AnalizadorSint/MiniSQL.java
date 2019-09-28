@@ -151,6 +151,7 @@ public class MiniSQL extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_elegirArchivoActionPerformed
 
     private void btn_EscanearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EscanearActionPerformed
+    GrammarRules reglas = new GrammarRules();
     txtArea_Errores.setText("");
     if (!PathSQL.equals("")){
         try {
@@ -165,10 +166,7 @@ public class MiniSQL extends javax.swing.JFrame {
             while (true) {
             Tokens token = lexer.yylex();
                 if (token == null) {
-                    //cerrar el archivo.out 
                     
-                    //INDICAR EN ESTA PARTE SI EL ANÁLISIS FUE CORRECTO O NO
-                    txtArea_Errores.setText(erroresL);
                     break;                                     
                 }
                 
@@ -224,42 +222,32 @@ public class MiniSQL extends javax.swing.JFrame {
                         break;
                 }
             }
-            //COMIENZA EL ANÁLISIS SINTÁCTICO
-            
-            //posibles comienzos de statement
-            
-            //recordar crear el lookahead para llevar una lógica
+            //COMIENZA EL ANÁLISIS SINTÁCTICO                   
             int i = 0;
             while(i<ListadoDeSentencias.size()){
                 String PartesDeSentenciaActual[] = ListadoDeSentencias.get(i).split("°");
-                String ComienzoDeSentencia[] = PartesDeSentenciaActual[0].split("|");
-                //LEER TODOS LOS TOKENS ANTES Y SI CONTIENE ERROR QUE NO ENTRE
-                //A ESTE SWITCH
-                switch(ComienzoDeSentencia[0]) {
-                    //DML
-                    case "SELECT":                    
-                        break;
-                    case "INSERT":                    
-                        break;
-                    case "UPDATE":                    
-                        break;
-                    case "DELETE":                    
-                        break;
-                    case "CREATE":
+                boolean HayError = false;
 
-                    //DDL    
-                        break;
-                    case "ALTER":                    
-                        break;
-                    case "DROP":                    
-                        break;
-                    case "TRUNCATE":                    
-                        break;
-                    default:
-                        break;
+                for (int j = 0; j < PartesDeSentenciaActual.length-1; j++) {
+                    String PartesDeToken[] = PartesDeSentenciaActual[j].split("|");
+                    if(PartesDeToken[0].equals("ERROR")){
+                        HayError = true;
+                    }
+                }
+                if (!HayError) {
+                    erroresS+= reglas.LeerStatement(PartesDeSentenciaActual);
                 }
                 i++;
             }
+            
+            if (erroresS.equals("")) {
+                //mostrar mensaje en pantalla de análisis correcto
+            }
+            else{
+                //mostrar mensaje en pantalla de análisis incorrecto
+                txtArea_Errores.setText(erroresL +"\n\n"+erroresS);
+            }
+            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MiniSQL.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
