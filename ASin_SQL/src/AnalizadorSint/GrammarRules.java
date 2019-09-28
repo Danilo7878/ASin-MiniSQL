@@ -12,12 +12,14 @@ package AnalizadorSint;
 public class GrammarRules {
 
     
-    String[] a;    
+    String[] a;
+    int lookahead;
     //un método público donde se elija que tipo de instrucción es
     //y 8 métodos privados que analicen la sentencia.
     //devolver un string con los errores
     public String LeerStatement(String[] A){
         a = A;
+        lookahead = 1;
         String[] ComienzoDeSentencia = A[0].split("|");
         String Error = "";
         switch(ComienzoDeSentencia[0]) {
@@ -35,7 +37,7 @@ public class GrammarRules {
             DELETErules();
             break;
         case "CREATE":
-            CREATErules();    
+            Error = CREATErules();    
             break;
         case "ALTER":
             ALTERrules();
@@ -64,15 +66,137 @@ public class GrammarRules {
     private void DELETErules(){
     }
     
-    private void CREATErules(){
+    private String CREATErules(){
+        if (comparar("DATABASE")) {
+           if(comparar("Identificador")){
+           return "";
+           }
+           else{
+           return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+           }
+        }else if (comparar("TABLE")) {
+            return "";
+        }else if (comparar("VIEW")) {
+            return "";
+        }else if (comparar("LOGIN")) {
+            return "";
+        }else if (comparar("INDEX")) {
+            return "";
+        }else{
+            return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+        }
     }
     
     private void ALTERrules(){
+        
     }
     
-    private void DROPrules(){
+    private String DROPrules(){
+        if (comparar("DATABASE")){
+           if(comparar("Identificador")){
+               if (comparar(",")) {
+                   while(comparar("Identificador")){
+                       if (comparar(";")){
+                       return "";
+                       }else if (comparar("GO")){
+                       return "";
+                       }else if (comparar(",")){
+                       //no hago nada porque es correcto
+                       }else{
+                       return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                        + "> en la linea: " + a[lookahead].split("|")[1];
+                       }
+                   }
+                   return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+               }
+               if (comparar(";")) {
+               return "";    
+               }
+               else if (comparar("GO")){
+               return "";
+               }
+               else
+               {
+               return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+               }
+            }else if(comparar("IF")){
+               if (comparar("EXISTS")){
+               if(comparar("Identificador")){
+               if (comparar(",")) {
+                   while(comparar("Identificador")){
+                       if (comparar(";")){
+                       return "";
+                       }else if (comparar("GO")){
+                       return "";
+                       }else if (comparar(",")){
+                       //no hago nada porque es correcto
+                       }else{
+                       return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                        + "> en la linea: " + a[lookahead].split("|")[1];
+                       }
+                   }
+                   return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+               }
+               if (comparar(";")) {
+               return "";    
+               }
+               else if (comparar("GO")){
+               return "";
+               }
+               else
+               {
+               return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+               }
+               }
+               else{
+                return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                 + "> en la linea: " + a[lookahead].split("|")[1];
+               }
+                }else{
+                return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+           }
+            }else{
+            return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                     + "> en la linea: " + a[lookahead].split("|")[1];
+            }
+        }else if (comparar("TABLE")) {
+           if(comparar("Identificador")){
+           return "";
+           }
+           else{
+           return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+           }
+        }else if (comparar("VIEW")) {
+            return "";
+        }else if (comparar("LOGIN")) {
+            return "";
+        }else if (comparar("INDEX")) {
+            return "";
+        }else{
+            return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
+                    + "> en la linea: " + a[lookahead].split("|")[1];
+        }
     }
     
     private void TRUNCATErules(){
-    }   
+        
+    }    
+    
+    private boolean comparar(String esperado){
+        if (esperado.equals(a[lookahead].split("|")[0])) {
+            lookahead++;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

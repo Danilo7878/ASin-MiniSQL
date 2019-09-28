@@ -10,7 +10,7 @@ import static AnalizadorSint.Tokens.*;
 Letra = [a-zA-Z]+
 LetraOguion = [a-zA-Z_]+
 Digito = [0-9]+
-espacio = [ ,\t,\r,\n]+
+espacio = [ |\t|\r|\n]+
 Exponente = [eE]
 Bit = [0-1]|"NULL"
 Signo = [+-]?

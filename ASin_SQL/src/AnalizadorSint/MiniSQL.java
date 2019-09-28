@@ -160,7 +160,7 @@ public class MiniSQL extends javax.swing.JFrame {
             Lexer lexer = new Lexer(escanear);
             ArrayList<String> ListadoDeSentencias = new ArrayList();
             String sentencia = "";
-            String erroresL = "ERRORES DE LÉXICO: \n";
+            String erroresL = "";
             String erroresS = "";
             
             while (true) {
@@ -192,6 +192,7 @@ public class MiniSQL extends javax.swing.JFrame {
                     case Simbolo: case Palabra_Reservada:
                         if (lexer.lexeme.equals("GO")||lexer.lexeme.equals(";")) {
                             if (!sentencia.equals("")) {
+                                sentencia+=lexer.lexeme + "|" + lexer.linea;
                                 String nuevaSentencia = sentencia;
                                 ListadoDeSentencias.add(nuevaSentencia);
                                 sentencia = "";
@@ -228,24 +229,24 @@ public class MiniSQL extends javax.swing.JFrame {
                 String PartesDeSentenciaActual[] = ListadoDeSentencias.get(i).split("°");
                 boolean HayError = false;
 
-                for (int j = 0; j < PartesDeSentenciaActual.length-1; j++) {
+                for (int j = 0; j < PartesDeSentenciaActual.length; j++) {
                     String PartesDeToken[] = PartesDeSentenciaActual[j].split("|");
                     if(PartesDeToken[0].equals("ERROR")){
                         HayError = true;
                     }
                 }
                 if (!HayError) {
-                    erroresS+= reglas.LeerStatement(PartesDeSentenciaActual);
+                    erroresS+= "\n" + reglas.LeerStatement(PartesDeSentenciaActual);
                 }
                 i++;
             }
             
-            if (erroresS.equals("")) {
+            if (erroresS.equals("") && erroresL.equals("")) {
                 //mostrar mensaje en pantalla de análisis correcto
             }
             else{
                 //mostrar mensaje en pantalla de análisis incorrecto
-                txtArea_Errores.setText(erroresL +"\n\n"+erroresS);
+                txtArea_Errores.setText("ERRORES DE LÉXICO: \n"+erroresL +"\n\nERRORES DE SINTAXIS:"+erroresS);
             }
             
         } catch (FileNotFoundException ex) {
