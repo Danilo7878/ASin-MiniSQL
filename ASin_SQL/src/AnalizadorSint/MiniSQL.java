@@ -157,7 +157,8 @@ public class MiniSQL extends javax.swing.JFrame {
             // TODO add your handling code here:
             Reader escanear = new BufferedReader(new FileReader(PathSQL));
             Lexer lexer = new Lexer(escanear);
-            ArrayList<String> ListadoDeTokens = new ArrayList();
+            ArrayList<String> ListadoDeSentencias = new ArrayList();
+            String sentencia = "";
             String erroresL = "ERRORES DE LÉXICO: \n";
             String erroresS = "";
             
@@ -175,7 +176,7 @@ public class MiniSQL extends javax.swing.JFrame {
                 switch (token) {
                     //No necesito saber su valor
                      case Float: case Bit: case Int:  case String:
-                        ListadoDeTokens.add(token + "|" + lexer.linea);
+                        sentencia+=token + "|" + lexer.linea+"°";
                         break;
                     //No necesito hacer nada con ellos en el análisis sintáctico
                     case ComentarioSimple: case ComentarioMultilinea:
@@ -187,21 +188,30 @@ public class MiniSQL extends javax.swing.JFrame {
                             erroresL+= "ALERTA: Indentificador Truncado|Valor: " + TokenTruncado + "|Linea: " + lexer.linea
                             + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna + "\n";
                         }
-                        ListadoDeTokens.add(token + "|" + lexer.linea);
+                        sentencia+=token + "|" + lexer.linea+"°";
                         break;
                     //Aquí si necesito el valor específico del token
                     case Simbolo: case Palabra_Reservada:
-                        ListadoDeTokens.add(lexer.lexeme + "|" + lexer.linea);
+                        if (lexer.lexeme.equals("GO")||lexer.lexeme.equals(";")) {
+                            if (!sentencia.equals("")) {
+                                String nuevaSentencia = sentencia;
+                                ListadoDeSentencias.add(nuevaSentencia);
+                                sentencia = "";
+                            }                           
+                        }
+                        else{
+                          sentencia+=lexer.lexeme + "|" + lexer.linea+"°";
+                        }
                         break;
                     
                     //Aún no sé si hacerlos parte del análisis sintáctico                    
                     case StringError:
-                        ListadoDeTokens.add(token + "|" + lexer.linea);                        
+                        sentencia+=token + "|" + lexer.linea+"°";                        
                         erroresL+= "STRING ERROR: Falta <'> o se encontró un salto de linea|Valor: " + lexer.lexeme + "|Linea: " + lexer.linea
                                   + "|Columna Inicio: " + lexer.PrimeraColumna + "|Columna Fin: " + lexer.UltimaColumna + "\n";
                         break;                                                                
                     case ERROR:
-                        ListadoDeTokens.add(token + "|" + lexer.linea);
+                        sentencia+=token + "|" + lexer.linea+"°";
                         erroresL+= "ERROR: cadena no reconocida|Valor: "+lexer.lexeme+"|Linea: "+lexer.linea
                                 +"|Columna Inicio: "+lexer.PrimeraColumna+"|Columna Fin: "+lexer.UltimaColumna+"\n";
                         break;
@@ -219,28 +229,37 @@ public class MiniSQL extends javax.swing.JFrame {
             //posibles comienzos de statement
             
             //recordar crear el lookahead para llevar una lógica
-            switch(ListadoDeTokens.get(0)) {
-                case "SELECT":                    
-                    break;
-                case "INSERT":                    
-                    break;
-                case "UPDATE":                    
-                    break;
-                case "DELETE":                    
-                    break;
-                case "CREATE":
-                    
-                    break;
-                case "ALTER":                    
-                    break;
-                case "DROP":                    
-                    break;
-                case "TRUNCATE":                    
-                    break;
-                default:
-                    break;
+            int i = 0;
+            while(i<ListadoDeSentencias.size()){
+                String PartesDeSentenciaActual[] = ListadoDeSentencias.get(i).split("°");
+                String ComienzoDeSentencia[] = PartesDeSentenciaActual[0].split("|");
+                //LEER TODOS LOS TOKENS ANTES Y SI CONTIENE ERROR QUE NO ENTRE
+                //A ESTE SWITCH
+                switch(ComienzoDeSentencia[0]) {
+                    //DML
+                    case "SELECT":                    
+                        break;
+                    case "INSERT":                    
+                        break;
+                    case "UPDATE":                    
+                        break;
+                    case "DELETE":                    
+                        break;
+                    case "CREATE":
+
+                    //DDL    
+                        break;
+                    case "ALTER":                    
+                        break;
+                    case "DROP":                    
+                        break;
+                    case "TRUNCATE":                    
+                        break;
+                    default:
+                        break;
+                }
+                i++;
             }
-            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MiniSQL.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
