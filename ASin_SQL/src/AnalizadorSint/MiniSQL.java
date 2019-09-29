@@ -167,7 +167,10 @@ public class MiniSQL extends javax.swing.JFrame {
             while (true) {
             Tokens token = lexer.yylex();
                 if (token == null) {
-                    
+                    if (!sentencia.equals("")) {
+                        sentencia += ";|últimaLínea";
+                        ListadoDeSentencias.add(sentencia);
+                    }
                     break;                                     
                 }
                 
