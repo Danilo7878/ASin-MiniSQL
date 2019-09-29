@@ -20,7 +20,7 @@ public class GrammarRules {
     public String LeerStatement(String[] A){
         a = A;
         lookahead = 1;
-        String[] ComienzoDeSentencia = A[0].split("|");
+        String[] ComienzoDeSentencia = A[0].split("\\|");
         String Error = "";
         switch(ComienzoDeSentencia[0]) {
         //DML
@@ -43,57 +43,86 @@ public class GrammarRules {
             ALTERrules();
             break;
         case "DROP":
-            DROPrules();
+            Error = DROPrules();
             break;
         case "TRUNCATE":
             TRUNCATErules();
             break;
         default:
+            Error+= "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                        + "> en la linea: " + a[lookahead].split("\\|")[1];
             break;
         }
         return Error;
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private void SELECTrules(){
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private void INSERTrules(){
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private void UPDATErules(){
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private void DELETErules(){
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private String CREATErules(){
+//--------------------------------------------------------------------------------------------------------------------------------
         if (comparar("DATABASE")) {
            if(comparar("Identificador")){
            return "";
            }
            else{
-           return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
+           return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
            }
+//--------------------------------------------------------------------------------------------------------------------------------
         }else if (comparar("TABLE")) {
             return "";
+//--------------------------------------------------------------------------------------------------------------------------------
         }else if (comparar("VIEW")) {
             return "";
+//--------------------------------------------------------------------------------------------------------------------------------
         }else if (comparar("LOGIN")) {
             return "";
+//--------------------------------------------------------------------------------------------------------------------------------
         }else if (comparar("INDEX")) {
             return "";
+//--------------------------------------------------------------------------------------------------------------------------------
         }else{
             return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
                     + "> en la linea: " + a[lookahead].split("|")[1];
         }
     }
-    
+ //--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------   
     private void ALTERrules(){
         
     }
-    
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------    
     private String DROPrules(){
+        //DROP DATABASE
         if (comparar("DATABASE")){
            if(comparar("Identificador")){
                if (comparar(",")) {
@@ -105,12 +134,12 @@ public class GrammarRules {
                        }else if (comparar(",")){
                        //no hago nada porque es correcto
                        }else{
-                       return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                        + "> en la linea: " + a[lookahead].split("|")[1];
+                       return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                        + "> en la linea: " + a[lookahead].split("\\|")[1];
                        }
                    }
-                   return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
+                   return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
                }
                if (comparar(";")) {
                return "";    
@@ -120,69 +149,228 @@ public class GrammarRules {
                }
                else
                {
-               return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
+               return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
                }
             }else if(comparar("IF")){
                if (comparar("EXISTS")){
-               if(comparar("Identificador")){
-               if (comparar(",")) {
-                   while(comparar("Identificador")){
-                       if (comparar(";")){
-                       return "";
-                       }else if (comparar("GO")){
-                       return "";
-                       }else if (comparar(",")){
-                       //no hago nada porque es correcto
-                       }else{
-                       return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                        + "> en la linea: " + a[lookahead].split("|")[1];
-                       }
-                   }
-                   return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
-               }
-               if (comparar(";")) {
-               return "";    
-               }
-               else if (comparar("GO")){
-               return "";
-               }
-               else
-               {
-               return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
-               }
-               }
-               else{
+                while(comparar("Identificador")){
+                    if (comparar(";")){
+                    return "";
+                    }else if (comparar("GO")){
+                    return "";
+                    }else if (comparar(",")){
+                    //no hago nada porque es correcto
+                    }else{
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                     + "> en la linea: " + a[lookahead].split("\\|")[1];
+                    }
+                }
                 return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                 + "> en la linea: " + a[lookahead].split("|")[1];
-               }
-                }else{
-                return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
-           }
+                 + "> en la linea: " + a[lookahead].split("\\|")[1];
+             }else{
+              return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+              + "> en la linea: " + a[lookahead].split("\\|")[1];
+              }
             }else{
-            return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                     + "> en la linea: " + a[lookahead].split("|")[1];
+            return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                     + "> en la linea: " + a[lookahead].split("\\|")[1];
             }
+//--------------------------------------------------------------------------------------------------------------------------------           
+           //DROP TABLE
         }else if (comparar("TABLE")) {
-           if(comparar("Identificador")){
-           return "";
-           }
-           else{
-           return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
-           }
+            if (comparar("IF")) {
+                if (comparar("EXISTS")) {
+                    while(comparar("Identificador")){
+                        if (comparar(".")) {
+                            if (comparar("Identificador")) {
+                                if (comparar(".")) {
+                                     if (comparar("Identificador")) {
+                                        if (comparar(",")) {
+                                         //déjelo correr 
+                                         }else if (comparar(";")) {
+                                            return "";
+                                         }else if (comparar("GO")) {
+                                            return "";
+                                         }else{
+                                             return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                             + "> en la linea: " + a[lookahead].split("\\|")[1];
+                                         }
+                                     }else{
+                                     return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                          + "> en la linea: " + a[lookahead].split("\\|")[1];
+                                     }
+                            }else if (comparar(",")) {
+                           //déjelo correr 
+                            }else if (comparar(";")) {
+                               return "";
+                            }else if (comparar("GO")) {
+                               return "";
+                            }else{
+                                 return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                 + "> en la linea: " + a[lookahead].split("\\|")[1];
+                            }
+                        }
+                        }
+                        else if (comparar(",")) {
+                           //déjelo correr 
+                        }else if (comparar(";")) {
+                               return "";
+                        }else if (comparar("GO")) {
+                               return "";
+                        }else{
+                        return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                 + "> en la linea: " + a[lookahead].split("\\|")[1];
+                        }
+                    }
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                        + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }else{
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }
+            }else{
+            while(comparar("Identificador")){
+                if (comparar(".")) {
+                    if (comparar("Identificador")) {
+                        if (comparar(".")) {
+                             if (comparar("Identificador")) {
+                                if (comparar(",")) {
+                                 //déjelo correr 
+                                 }else if (comparar(";")) {
+                                    return "";
+                                 }else if (comparar("GO")) {
+                                    return "";
+                                 }else{
+                                     return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                     + "> en la linea: " + a[lookahead].split("\\|")[1];
+                                 }
+                             }else{
+                             return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                  + "> en la linea: " + a[lookahead].split("\\|")[1];
+                             }
+                    }else if (comparar(",")) {
+                   //déjelo correr 
+                    }else if (comparar(";")) {
+                       return "";
+                    }else if (comparar("GO")) {
+                       return "";
+                    }else{
+                         return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                         + "> en la linea: " + a[lookahead].split("\\|")[1];
+                    }
+                }
+                }
+                else if (comparar(",")) {
+                   //déjelo correr 
+                }else if (comparar(";")) {
+                       return "";
+                }else if (comparar("GO")) {
+                       return "";
+                }else{
+                return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                         + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }
+            }
+            return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                + "> en la linea: " + a[lookahead].split("\\|")[1];
+        }            
+
+//--------------------------------------------------------------------------------------------------------------------------------
+           //DROP VIEW
         }else if (comparar("VIEW")) {
-            return "";
+            if (comparar("IF")) {
+                if (comparar("EXISTS")) {
+                    while(comparar("Identificador")){
+                        if (comparar(".")) {
+                             if (comparar("Identificador")) {
+                                if (comparar(",")) {
+                                 //déjelo correr 
+                                 }else if (comparar(";")) {
+                                    return "";
+                                 }else if (comparar("GO")) {
+                                    return "";
+                                 }else{
+                                     return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                     + "> en la linea: " + a[lookahead].split("\\|")[1];
+                                 }
+                             }else{
+                             return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                                  + "> en la linea: " + a[lookahead].split("\\|")[1];
+                             }
+                        }else if (comparar(",")) {
+                       //déjelo correr 
+                        }else if (comparar(";")) {
+                           return "";
+                        }else if (comparar("GO")) {
+                           return "";
+                        }else{
+                             return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                             + "> en la linea: " + a[lookahead].split("\\|")[1];
+                        }                    
+                    }
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                        + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }else{
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }
+            }else{
+            while(comparar("Identificador")){
+                if (comparar(".")) {
+                     if (comparar("Identificador")) {
+                        if (comparar(",")) {
+                         //déjelo correr 
+                         }else if (comparar(";")) {
+                            return "";
+                         }else if (comparar("GO")) {
+                            return "";
+                         }else{
+                             return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                             + "> en la linea: " + a[lookahead].split("\\|")[1];
+                         }
+                     }else{
+                     return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                          + "> en la linea: " + a[lookahead].split("\\|")[1];
+                     }
+            }else if (comparar(",")) {
+           //déjelo correr 
+            }else if (comparar(";")) {
+               return "";
+            }else if (comparar("GO")) {
+               return "";
+            }else{
+                 return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                 + "> en la linea: " + a[lookahead].split("\\|")[1];
+            }
+        }
+            return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                + "> en la linea: " + a[lookahead].split("\\|")[1];
+        }
+//--------------------------------------------------------------------------------------------------------------------------------            
+          //DROP LOGIN
         }else if (comparar("LOGIN")) {
-            return "";
+            if (comparar("Identificador")) {
+                if (comparar(";")) {
+                    return "";
+                }else if (comparar("GO")) {
+                    return "";
+                }else{
+                    return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                            + "> en la linea: " + a[lookahead].split("\\|")[1];
+                }                
+            }else{
+                return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                        + "> en la linea: " + a[lookahead].split("\\|")[1];
+            }
+//--------------------------------------------------------------------------------------------------------------------------------            
+            //DROP INDEX
         }else if (comparar("INDEX")) {
             return "";
+//--------------------------------------------------------------------------------------------------------------------------------
         }else{
-            return "ERROR: no se esperaba un <" + a[lookahead].split("|")[0]
-                    + "> en la linea: " + a[lookahead].split("|")[1];
+            return "ERROR: no se esperaba un <" + a[lookahead].split("\\|")[0]
+                    + "> en la linea: " + a[lookahead].split("\\|")[1];
         }
     }
     
@@ -191,7 +379,7 @@ public class GrammarRules {
     }    
     
     private boolean comparar(String esperado){
-        if (esperado.equals(a[lookahead].split("|")[0])) {
+        if (esperado.equals(a[lookahead].split("\\|")[0])) {
             lookahead++;
             return true;
         }

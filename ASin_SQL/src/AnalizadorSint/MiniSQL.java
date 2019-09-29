@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 /**
  *
  * @author danil
@@ -230,22 +231,26 @@ public class MiniSQL extends javax.swing.JFrame {
                 boolean HayError = false;
 
                 for (int j = 0; j < PartesDeSentenciaActual.length; j++) {
-                    String PartesDeToken[] = PartesDeSentenciaActual[j].split("|");
+                    String PartesDeToken[] = PartesDeSentenciaActual[j].split("\\|");
                     if(PartesDeToken[0].equals("ERROR")){
                         HayError = true;
                     }
                 }
                 if (!HayError) {
-                    erroresS+= "\n" + reglas.LeerStatement(PartesDeSentenciaActual);
+                    String erroresAnalizados = "";
+                    erroresAnalizados += reglas.LeerStatement(PartesDeSentenciaActual);
+                    if (!erroresAnalizados.equals("")) {
+                        erroresS += "\n" + erroresAnalizados;
+                    }
                 }
                 i++;
             }
             
             if (erroresS.equals("") && erroresL.equals("")) {
-                //mostrar mensaje en pantalla de análisis correcto
+                JOptionPane.showMessageDialog(null,"Se parseó correctamente");
             }
             else{
-                //mostrar mensaje en pantalla de análisis incorrecto
+                JOptionPane.showMessageDialog(null,"Se parseó con errores");
                 txtArea_Errores.setText("ERRORES DE LÉXICO: \n"+erroresL +"\n\nERRORES DE SINTAXIS:"+erroresS);
             }
             
